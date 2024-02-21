@@ -1,0 +1,54 @@
+<!-- NetFPGA项目定义开始 -->
+<nf:project xmlns:nf="http://www.NetFPGA.org/NF2_register_system" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.NetFPGA.org/NF2_register_system NF2_register_system.xsd ">
+  
+  <!-- 项目基本信息 -->
+  <nf:name>Reference router</nf:name> <!-- 项目名称 -->
+  <nf:description>Reference IPv4 router</nf:description> <!-- 项目描述 -->
+  <nf:version_major>1</nf:version_major> <!-- 主版本号 -->
+  <nf:version_minor>0</nf:version_minor> <!-- 次版本号 -->
+  <nf:version_revision>0</nf:version_revision> <!-- 修订号 -->
+  <nf:dev_id>2</nf:dev_id> <!-- 设备ID，用于区分不同的NetFPGA项目 -->
+  
+  <!-- 使用的模块列表 -->
+  <nf:use_modules> 
+    core/io_queues/cpu_dma_queue <!-- CPU DMA队列 -->
+    core/io_queues/ethernet_queue <!-- 以太网队列 -->
+    contrib/ucsd/gig_eth_mac <!-- UCSD的Gigabit Ethernet MAC -->
+    core/input_arbiter/rr_input_arbiter <!-- 输入仲裁器 -->
+    core/nf2/generic_top <!-- 通用顶层模块 -->
+    core/nf2/reference_core <!-- 参考核心模块 -->
+    core/output_port_lookup/cam_router <!-- CAM路由器 -->
+    core/output_queues/sram_rr_output_queues <!-- SRAM循环输出队列 -->
+    core/sram_arbiter/sram_weighted_rr <!-- SRAM加权循环仲裁器 -->
+    core/user_data_path/reference_user_data_path <!-- 用户数据路径 -->
+    core/io/mdio <!-- 管理数据输入输出 -->
+    core/cpci_bus <!-- CPCI总线 -->
+    core/dma <!-- 直接内存访问 -->
+    core/user_data_path/udp_reg_master <!-- UDP注册主控 -->
+    core/io_queues/add_rm_hdr <!-- 添加/移除头部 -->
+    core/strip_headers/keep_length <!-- 保持长度的去头模块 -->
+    core/utils <!-- 实用工具 -->
+    core/utils/generic_regs <!-- 通用寄存器 -->
+  </nf:use_modules>
+  
+  <!-- 内存分配配置 -->
+  <nf:memalloc layout="reference">
+    <!-- 核心组1 -->
+    <nf:group name="core1">
+      <nf:instance name="device_id"/> <!-- 设备ID实例 -->
+      <nf:instance name="dma" base="0x0500000"/> <!-- DMA模块，基地址指定 -->
+      <nf:instance name="mdio"/> <!-- MDIO模块 -->
+      <nf:instance name="nf2_mac_grp" count="4"/> <!-- MAC组，包含4个实例 -->
+      <nf:instance name="cpu_dma_queue" count="4"/> <!-- CPU DMA队列，包含4个实例 -->
+    </nf:group>
+    <!-- UDP组 -->
+    <nf:group name="udp">
+      <nf:instance name="in_arb"/> <!-- 输入仲裁器实例 -->
+      <nf:instance name="router_op_lut"/> <!-- 路由操作查找表 -->
+      <nf:instance name="ids"/> <!-- IDS模块实例 -->
+      <nf:instance name="strip_headers"/> <!-- 去头模块实例 -->
+      <nf:instance name="output_queues"/> <!-- 输出队列 -->
+    </nf:group>
+  </nf:memalloc>
+</nf:project>
+<!-- NetFPGA项目定义结束 -->
